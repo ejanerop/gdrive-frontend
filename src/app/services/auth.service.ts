@@ -27,10 +27,10 @@ export class AuthService {
 
   logout() {
 
-    const url = `${this.url}/logout`;
+    const url = `${this.url}/logout/ya29.a0AfH6SMCUrBltIueJh80J1mx2VD3cqdnDoZz3l4nUWnrxwctCJbyHjghnSfpZn0-q3FhzgKGZyLefQ7Vf9BMgAXZF9MjFg2hixpnSFbPs04CRa9vKWZAgi6ya11tlRMBxgfkc_kDfTZtu5hlKhNZPU_PUcecH`;
 
     const token = this.api_token;
-    return this.http.post(url, {api_token : token}, {observe: 'response'}).pipe( map( (resp : any) => {
+    return this.http.get(url, {observe: 'response'}).pipe( map( (resp : any) => {
       this.removeToken();
       return resp;
     })
