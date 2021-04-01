@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from '@angular/material/core';
 import {MatTreeModule} from '@angular/material/tree';
+import { MatChipsModule } from "@angular/material/chips";
 
 
 
@@ -42,7 +43,8 @@ import {MatTreeModule} from '@angular/material/tree';
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatTreeModule
+    MatTreeModule,
+    MatChipsModule
   ],
   exports : [
     MatButtonModule,
@@ -62,7 +64,8 @@ import {MatTreeModule} from '@angular/material/tree';
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatTreeModule
+    MatTreeModule,
+    MatChipsModule
   ]
 })
 export class MaterialModule { }

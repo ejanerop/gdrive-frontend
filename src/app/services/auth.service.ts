@@ -27,10 +27,10 @@ export class AuthService {
 
   logout() {
 
-    const url = `${this.url}/logout/ya29.a0AfH6SMCUrBltIueJh80J1mx2VD3cqdnDoZz3l4nUWnrxwctCJbyHjghnSfpZn0-q3FhzgKGZyLefQ7Vf9BMgAXZF9MjFg2hixpnSFbPs04CRa9vKWZAgi6ya11tlRMBxgfkc_kDfTZtu5hlKhNZPU_PUcecH`;
+    const url = `${this.url}/logout/${this.token}`;
 
     const token = this.api_token;
-    return this.http.get(url, {observe: 'response'}).pipe( map( (resp : any) => {
+    return this.http.get(url).pipe( map( (resp : any) => {
       this.removeToken();
       return resp;
     })
@@ -38,10 +38,10 @@ export class AuthService {
 
   }
 
-  private saveToken( idToken: string ) {
+  saveToken( token : string ) {
 
-    this.api_token = idToken;
-    localStorage.setItem('token', idToken);
+    this.api_token = token;
+    localStorage.setItem('token', token);
 
     let hoy = new Date();
     hoy.setSeconds( 3600 );

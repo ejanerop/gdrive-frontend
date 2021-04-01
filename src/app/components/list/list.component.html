@@ -1,6 +1,17 @@
 <mat-card>
-  <mat-card-title>Mi drive</mat-card-title>
-  <mat-card-subtitle> </mat-card-subtitle>
+  <mat-card-header>
+    <mat-card-title>Mi drive</mat-card-title>
+    <mat-card-subtitle>
+      <mat-form-field appearance="outline">
+        <mat-label>Correo electrónico</mat-label>
+        <input matInput placeholder="Placeholder">
+        <mat-icon matSuffix>alternate_email</mat-icon>
+        <mat-hint>example@gmail.com</mat-hint>
+      </mat-form-field>
+      <span class="spacer"></span>
+      <button mat-raised-button color="primary">Primary</button>
+    </mat-card-subtitle>
+  </mat-card-header>
   <mat-card-content>
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
       <!-- This is the tree node template for leaf nodes -->
@@ -8,7 +19,16 @@
         <li class="mat-tree-node">
           <!-- use a disabled button to provide padding for tree leaf -->
           <button mat-icon-button disabled></button>
+          <mat-icon class="mat-icon-rtl-mirror">insert_drive_file</mat-icon>
+          &nbsp;
           {{node.name}}
+          &nbsp;
+          <span class="spacer"></span>
+          <mat-chip-list aria-label="Permissions">
+            <mat-chip *ngFor="let permission of node.permissions" color="primary" selected>
+              {{permission.emailAddress != null ? permission.emailAddress : permission.id }}
+            </mat-chip>
+          </mat-chip-list>
         </li>
       </mat-tree-node>
       <!-- This is the tree node template for expandable nodes -->
@@ -16,18 +36,27 @@
         <li>
           <div class="mat-tree-node">
             <button mat-icon-button matTreeNodeToggle
-                    [attr.aria-label]="'Toggle ' + node.name">
-              <mat-icon class="mat-icon-rtl-mirror">
-                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-              </mat-icon>
-            </button>
-            {{node.name}}
-          </div>
-          <ul [class.example-tree-invisible]="!treeControl.isExpanded(node)">
-            <ng-container matTreeNodeOutlet></ng-container>
-          </ul>
-        </li>
-      </mat-nested-tree-node>
-    </mat-tree>
-  </mat-card-content>
+            [attr.aria-label]="'Toggle ' + node.name">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          <mat-icon class="mat-icon-rtl-mirror">folder</mat-icon>
+          &nbsp;
+          {{node.name}}
+          &nbsp;
+          <span class="spacer"></span>
+          <mat-chip-list aria-label="Permissions">
+            <mat-chip *ngFor="let permission of node.permissions" color="primary" selected>
+              {{permission.emailAddress != null ? permission.emailAddress : permission.id }}
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+        <ul [class.example-tree-invisible]="!treeControl.isExpanded(node)">
+          <ng-container matTreeNodeOutlet></ng-container>
+        </ul>
+      </li>
+    </mat-nested-tree-node>
+  </mat-tree>
+</mat-card-content>
 </mat-card>

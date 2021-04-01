@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {MatTreeFlatDataSource, MatTreeFlattener, MatTreeNestedDataSource} from '@angular/material/tree';
 import {FlatTreeControl, NestedTreeControl} from '@angular/cdk/tree';
+import { AuthService } from 'src/app/services/auth.service';
+import { FileService } from 'src/app/services/file.service';
+import { File } from 'src/app/models/file';
 
 
 interface FileNode {
@@ -45,26 +48,25 @@ const TREE_DATA: FileNode[] = [
 })
 export class ListComponent implements OnInit {
 
-  treeControl = new NestedTreeControl<FileNode>(node => node.children);
-  dataSource = new MatTreeNestedDataSource<FileNode>();
+  treeControl = new NestedTreeControl<File>(node => node.children);
+  dataSource = new MatTreeNestedDataSource<File>();
 
 
-  hasChild = (_: number, node: FileNode) => !!node.children && node.children.length > 0;
+  hasChild = (_: number, node: File) => !!node.children && node.children.length > 0;
 
-    token : string | null = 's';
 
-    constructor( private route : ActivatedRoute){
-      this.dataSource.data = TREE_DATA;
+    constructor( private authService : AuthService , private fileService : FileService ){
+      this.dataSource.data = [];
     }
 
     ngOnInit(): void {
-      this.token = this.route.snapshot.paramMap.get('token');
+      console.log(this.authService.token);
+      this.fileService.files().subscribe(( resp : any )=>{
+        console.log(resp);
+        this.dataSource.data = resp;
+      });
+
     }
 
-    getToken() {
-      console.log(this.token);
-
-      return this.token;
-    }
 
   }

@@ -10,13 +10,15 @@ import { HomeComponent } from './components/home/home.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { HttpClientModule } from '@angular/common/http';
+import { RedirectComponent } from './components/redirect/redirect.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ListComponent,
     HomeComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    RedirectComponent
   ],
   imports: [
     BrowserModule,
