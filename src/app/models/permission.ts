@@ -12,4 +12,8 @@ export class Permission {
 
   }
 
+  includes( substring : string ) {
+    return this.emailAddress?.toLowerCase().includes(substring);
+  }
+
 }

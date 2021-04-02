@@ -19,5 +19,9 @@ export class File {
 
   }
 
+  hasPermission( email : string ) {
+    return this.permissions.find((permission) => permission.includes(email)) != undefined ? true : false;
+  }
+
 
 }

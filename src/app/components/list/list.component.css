@@ -12,3 +12,10 @@
 .spacer {
   flex: 1 1 auto;
 }
+
+.mat-raised-button {
+  height: 50px !important;
+  bottom: 3px;
+  margin-left: 3px;
+  font-size: larger;
+}

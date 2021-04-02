@@ -11,6 +11,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { HttpClientModule } from '@angular/common/http';
 import { RedirectComponent } from './components/redirect/redirect.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,9 @@ import { RedirectComponent } from './components/redirect/redirect.component';
     BrowserAnimationsModule,
     MaterialModule,
     FlexLayoutModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

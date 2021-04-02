@@ -19,6 +19,7 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from '@angular/material/core';
 import {MatTreeModule} from '@angular/material/tree';
 import { MatChipsModule } from "@angular/material/chips";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 
 
@@ -44,7 +45,8 @@ import { MatChipsModule } from "@angular/material/chips";
     MatDatepickerModule,
     MatNativeDateModule,
     MatTreeModule,
-    MatChipsModule
+    MatChipsModule,
+    MatProgressSpinnerModule
   ],
   exports : [
     MatButtonModule,
@@ -65,7 +67,8 @@ import { MatChipsModule } from "@angular/material/chips";
     MatDatepickerModule,
     MatNativeDateModule,
     MatTreeModule,
-    MatChipsModule
+    MatChipsModule,
+    MatProgressSpinnerModule
   ]
 })
 export class MaterialModule { }
