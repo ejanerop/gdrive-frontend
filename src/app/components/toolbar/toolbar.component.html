@@ -1,14 +1,14 @@
 <mat-toolbar>
-  <div fxLayout="row" fxLayoutAlign="space-between start" >
-    <div fxFlex="30%" fxFlexFill>
+  <div fxLayout="row" fxLayoutAlign="start none" >
+    <div fxFlex="90%" fxFlexFill>
       <span>Google Drive Permission Manager</span>
     </div>
     <span class="spacer"></span>
     <div fxFlex="10%" fxFlexFill>
-      <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="login()">
+      <button mat-icon-button class="example-icon" *ngIf="!isAuth()" (click)="login()">
         <mat-icon>login</mat-icon>
       </button>
-      <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="logout()">
+      <button mat-icon-button class="example-icon" *ngIf="isAuth()" (click)="logout()">
         <mat-icon>logout</mat-icon>
       </button>
     </div>

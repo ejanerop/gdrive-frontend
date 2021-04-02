@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { DOCUMENT } from '@angular/common';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ToolbarComponent implements OnInit {
 
-  constructor( @Inject(DOCUMENT) private document: Document ,  private authService : AuthService) { }
+  constructor( @Inject(DOCUMENT) private document: Document ,  private authService : AuthService , private router : Router ) { }
 
   ngOnInit(): void {
   }
@@ -21,8 +22,14 @@ export class ToolbarComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout().subscribe(resp => console.log(resp));
+    this.authService.logout().subscribe(resp => {
+      console.log(resp);
+      this.router.navigateByUrl('/home');
+    });
   }
 
+  isAuth() {
+    return this.authService.isAuth();
+  }
 
 }
