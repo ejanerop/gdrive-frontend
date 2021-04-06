@@ -36,9 +36,16 @@ export class ListComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.authService.token);
+    this.initFiles();
+
+  }
+
+  initFiles() {
     this.loading = true;
     this.fileService.files().subscribe(( resp : File[] )=>{
       console.log(resp);
+      this.files    = [];
+      this.allFiles = [];
       this.files = resp;
       this.dataSource.data = this.files;
       this.allFiles = this.files;
@@ -48,7 +55,6 @@ export class ListComponent implements OnInit {
       this.loading = false;
       console.log(error);
     });
-
   }
 
   get invalidEmail() {
@@ -83,6 +89,7 @@ export class ListComponent implements OnInit {
 
     this.fileService.unshare(this.form.value).subscribe((resp:any) => {
       console.log(resp);
+      this.initFiles();
     }, error =>{
       console.error(error);
     });
