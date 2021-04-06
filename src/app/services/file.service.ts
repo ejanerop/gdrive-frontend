@@ -31,6 +31,20 @@ export class FileService {
 
   }
 
+  unshare( data : any ) {
+
+    const url = `${this.url}/api/list`;
+
+    if(this.authService.token){
+      data.api_token = this.authService.token;
+    }
+
+    return this.http.post(url , data , {observe : 'response'}).pipe(map( (resp : any) =>{
+      return this.createArray(resp.body.files);
+    }));
+
+  }
+
   private createArray( filesObj : object ){
 
     let files : File[];
