@@ -1,11 +1,13 @@
+import { AuthService } from 'src/app/services/auth.service';
 import { Component, OnInit } from '@angular/core';
+import { File } from 'src/app/models/file';
+import { FileService } from 'src/app/services/file.service';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTreeNestedDataSource} from '@angular/material/tree';
 import { NestedTreeControl} from '@angular/cdk/tree';
-import { AuthService } from 'src/app/services/auth.service';
-import { FileService } from 'src/app/services/file.service';
-import { File } from 'src/app/models/file';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ValidatorsService } from 'src/app/services/validators.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Permission } from 'src/app/models/permission';
 
 @Component({
   selector: 'app-list',
@@ -14,21 +16,26 @@ import { ValidatorsService } from 'src/app/services/validators.service';
 })
 export class ListComponent implements OnInit {
 
-  treeControl = new NestedTreeControl<File>(node => node.children);
+  allFiles : File[] = [];
   dataSource = new MatTreeNestedDataSource<File>();
   files : File[] = [];
-  allFiles : File[] = [];
-  loading : boolean = false;
   form : FormGroup = new FormGroup({});
+  loading : boolean = false;
+  treeControl = new NestedTreeControl<File>(node => node.children);
 
 
   hasChild = (_: number, node: File) => !!node.children && node.children.length > 0;
 
-
-  constructor( private authService : AuthService , private fileService : FileService , private fb : FormBuilder , validators : ValidatorsService ){
+  constructor(
+    private authService : AuthService ,
+    private fileService : FileService ,
+    private fb : FormBuilder ,
+    private validators : ValidatorsService,
+    private _snackBar: MatSnackBar
+  ){
     this.dataSource.data = [];
     this.form = this.fb.group({
-      email : ['' , [Validators.required , Validators.pattern('[a-z0-9._%+-]+@gmail.com') , validators.ownerEmail ]],
+      email : ['' , [Validators.required , Validators.pattern('[a-z0-9._%+-]+@gmail.com') , this.validators.ownerEmail ]],
       permission : [''],
       files : this.fb.array([])
     });
@@ -37,13 +44,13 @@ export class ListComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.authService.token);
     this.initFiles();
-
   }
 
   initFiles() {
     this.loading = true;
+    this.form.reset();
+    this.form.get('email')?.markAsPristine();
     this.fileService.files().subscribe(( resp : File[] )=>{
-      console.log(resp);
       this.files    = [];
       this.allFiles = [];
       this.files = resp;
@@ -53,7 +60,6 @@ export class ListComponent implements OnInit {
       this.onEmailChange();
     }, error =>{
       this.loading = false;
-      console.log(error);
     });
   }
 
@@ -73,7 +79,11 @@ export class ListComponent implements OnInit {
     }
   }
 
-
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action, {
+      duration: 2000,
+    });
+  }
 
   isFolder( node : any ) : boolean {
     return node.mimeType == 'application/vnd.google-apps.folder';
@@ -89,13 +99,12 @@ export class ListComponent implements OnInit {
 
     this.fileService.unshare(this.form.value).subscribe((resp:any) => {
       console.log(resp);
+      this.openSnackBar('Permisos revocados con éxito' , 'Cerrar');
       this.initFiles();
     }, error =>{
       console.error(error);
+      this.openSnackBar('Permisos revocados con éxito' , 'Cerrar');
     });
-
-
-
   }
 
   onEmailChange() {
@@ -110,6 +119,10 @@ export class ListComponent implements OnInit {
         this.form.get('permission')?.setValue(permission);
       }
     });
+  }
+
+  setEmail( permission : Permission ) {
+    this.form.get('email')?.setValue(permission.emailAddress);
   }
 
   filter( email : string ) {

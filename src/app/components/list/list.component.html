@@ -31,7 +31,7 @@
           &nbsp;
           <span class="spacer"></span>
           <mat-chip-list aria-label="Permissions">
-            <mat-chip *ngFor="let permission of node.permissions" color="primary" selected>
+            <mat-chip *ngFor="let permission of node.permissions" color="primary" (click)="setEmail(permission)" selected>
               {{permission.emailAddress != null ? permission.emailAddress : permission.id }}
             </mat-chip>
           </mat-chip-list>

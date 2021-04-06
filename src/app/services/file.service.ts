@@ -2,8 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { File } from '../models/file';
-import { Permission } from '../models/permission';
+import { ArrayService } from './array.service';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -13,7 +12,7 @@ export class FileService {
 
   url :string = environment.api_url;
 
-  constructor( private http : HttpClient , private authService : AuthService ) {}
+  constructor( private http : HttpClient , private authService : AuthService , private arrayService : ArrayService ) {}
 
   files() {
 
@@ -26,7 +25,7 @@ export class FileService {
     }
 
     return this.http.post(url , data , {observe : 'response'}).pipe(map( (resp : any) =>{
-      return this.createArray(resp.body.files);
+      return this.arrayService.createArray(resp.body.files);
     }));
 
   }
@@ -41,49 +40,6 @@ export class FileService {
 
     return this.http.post(url , data , {observe : 'response'});
 
-  }
-
-  private createArray( filesObj : object ){
-
-    let files : File[];
-
-    console.log(filesObj);
-
-    if (filesObj == null) { return []; }
-
-    files = this.fileArr(filesObj);
-
-    return files;
-  }
-
-  private fileArr( filesObj : object ){
-
-    let files : File[] = [];
-
-    Object.values(filesObj).forEach((body:any) => {
-      let file : File = new File(body.id , body.name , body.mimeType);
-
-      file.permissions = this.permArr(body.permissions.permissions);
-
-      if (body.children.length != 0) {
-        file.children = this.fileArr(body.children);
-      }
-      files.push(file);
-    });
-
-    return files;
-
-  }
-
-  permArr( permObj : object ) {
-
-    let permissions : Permission[] = [];
-
-    Object.values(permObj).forEach((body:any) => {
-      let permission : Permission = new Permission(body.id , body.emailAddress );
-      permissions.push(permission);
-    });
-    return permissions;
   }
 
 }
