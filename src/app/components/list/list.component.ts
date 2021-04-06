@@ -4,7 +4,8 @@ import { NestedTreeControl} from '@angular/cdk/tree';
 import { AuthService } from 'src/app/services/auth.service';
 import { FileService } from 'src/app/services/file.service';
 import { File } from 'src/app/models/file';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ValidatorsService } from 'src/app/services/validators.service';
 
 @Component({
   selector: 'app-list',
@@ -24,10 +25,12 @@ export class ListComponent implements OnInit {
   hasChild = (_: number, node: File) => !!node.children && node.children.length > 0;
 
 
-  constructor( private authService : AuthService , private fileService : FileService , private fb : FormBuilder ){
+  constructor( private authService : AuthService , private fileService : FileService , private fb : FormBuilder , validators : ValidatorsService ){
     this.dataSource.data = [];
     this.form = this.fb.group({
-      email : ['' , Validators.required]
+      email : ['' , [Validators.required , Validators.pattern('[a-z0-9._%+-]+@gmail.com') , validators.ownerEmail ]],
+      permission : [''],
+      files : this.fb.array([])
     });
   }
 
@@ -48,12 +51,30 @@ export class ListComponent implements OnInit {
 
   }
 
+  get invalidEmail() {
+    return this.form.get('email')?.invalid;
+  }
+
+  get disabledSubmit() {
+    return this.invalidEmail || this.files.length === 0;
+  }
+
+  get emailError() {
+    if (this.form.get('email')?.hasError('owner_email')) {
+      return 'Ese es el email del dueño.';
+    }else {
+      return 'Escribe una dirección Gmail válida.';
+    }
+  }
+
+
+
   isFolder( node : any ) : boolean {
     return node.mimeType == 'application/vnd.google-apps.folder';
   }
 
   unshare() {
-    console.log(this.form.value);
+    console.log(this.form);
 
   }
 
@@ -62,6 +83,12 @@ export class ListComponent implements OnInit {
       this.filter(email);
       this.dataSource.data = [];
       this.dataSource.data = this.files;
+      //this.treeControl.expandAll();
+      this.populateFilesArr(this.files , true);
+      if(!this.disabledSubmit) {
+        let permission = this.files[0].permissionId(email);
+        this.form.get('permission')?.setValue(permission);
+      }
     });
   }
 
@@ -80,6 +107,24 @@ export class ListComponent implements OnInit {
     console.log(this.files);
 
   }
+
+  populateFilesArr( files : File[] , root : boolean )
+  {
+    let arr = this.form.controls['files'] as FormArray;
+
+    if (root) {arr.clear();}
+
+    for ( const file of files ) {
+      if(file.hasChild()){
+        this.populateFilesArr(file.children , false);
+      }
+      if (file.hasPermission(this.form.get('email')?.value)) {
+        arr.push(new FormControl(file.id));
+      }
+    }
+  }
+
+
 
 
 

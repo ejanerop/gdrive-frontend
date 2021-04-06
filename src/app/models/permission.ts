@@ -16,4 +16,6 @@ export class Permission {
     return this.emailAddress?.toLowerCase().includes(substring);
   }
 
+
+
 }

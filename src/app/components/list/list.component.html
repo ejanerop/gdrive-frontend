@@ -8,10 +8,10 @@
           <input matInput formControlName="email" placeholder="Placeholder">
           <mat-icon matSuffix>alternate_email</mat-icon>
           <mat-hint>example@gmail.com</mat-hint>
-          <mat-error>El email es requerido</mat-error>
+          <mat-error>{{emailError}}</mat-error>
         </mat-form-field>
         <span class="spacer"></span>
-        <button type="submit" mat-raised-button color="primary">Descompartir</button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="disabledSubmit">Descompartir</button>
       </form>
     </mat-card-subtitle>
   </mat-card-header>
@@ -24,7 +24,7 @@
 
           <button mat-icon-button disabled></button>
           <mat-icon class="mat-icon-rtl-mirror">
-            {{ isFolder(node) ? 'folder' : 'insert_drive_file'}}
+            {{ isFolder(node) ? 'folder' : 'insert_drive_file' }}
           </mat-icon>
           &nbsp;
           {{node.name}}
