@@ -74,7 +74,20 @@ export class ListComponent implements OnInit {
   }
 
   unshare() {
-    console.log(this.form);
+    console.log(this.form.value);
+
+    if (this.form.invalid) {
+      this.form.get('email')?.markAsTouched();
+      return;
+    }
+
+    this.fileService.unshare(this.form.value).subscribe((resp:any) => {
+      console.log(resp);
+    }, error =>{
+      console.error(error);
+    });
+
+
 
   }
 
@@ -118,7 +131,7 @@ export class ListComponent implements OnInit {
       if(file.hasChild()){
         this.populateFilesArr(file.children , false);
       }
-      if (file.hasPermission(this.form.get('email')?.value)) {
+      if (file.hasPermissionOnlyRoot(this.form.get('email')?.value)) {
         arr.push(new FormControl(file.id));
       }
     }

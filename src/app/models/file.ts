@@ -36,6 +36,11 @@ export class File {
     }
   }
 
+  hasPermissionOnlyRoot( email : string ) {
+    let hasPermission = this.permissions.some((permission) => permission.includes(email));
+    return hasPermission;
+  }
+
   hasPermission( email : string ) {
     let hasPermission = this.permissions.some((permission) => permission.includes(email));
 
