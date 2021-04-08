@@ -23,7 +23,6 @@ export class ToolbarComponent implements OnInit {
 
   logout() {
     this.authService.logout().subscribe(resp => {
-      console.log(resp);
       this.router.navigateByUrl('/home');
     });
   }

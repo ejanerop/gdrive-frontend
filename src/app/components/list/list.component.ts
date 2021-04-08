@@ -8,6 +8,7 @@ import { NestedTreeControl} from '@angular/cdk/tree';
 import { ValidatorsService } from 'src/app/services/validators.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Permission } from 'src/app/models/permission';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-list',
@@ -44,7 +45,6 @@ export class ListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.authService.token);
     this.initFiles();
   }
 
@@ -92,6 +92,10 @@ export class ListComponent implements OnInit {
     return this.invalidEmail || this.files.length === 0;
   }
 
+  owner( permission : Permission ) {
+    return permission.emailAddress == environment.owner_email;
+  }
+
   get emailError() {
     if (this.form.get('email')?.hasError('owner_email')) {
       return 'Ese es el email del dueño.';
@@ -111,15 +115,12 @@ export class ListComponent implements OnInit {
   }
 
   unshare() {
-    console.log(this.form.value);
-
     if (this.form.invalid) {
       this.form.get('email')?.markAsTouched();
       return;
     }
 
     this.fileService.unshare(this.form.value).subscribe((resp:any) => {
-      console.log(resp);
       this.openSnackBar('Permisos revocados con éxito' , 'Cerrar');
       this.initFiles();
     }, error =>{
@@ -152,8 +153,6 @@ export class ListComponent implements OnInit {
     } else {
       this.filterInner(this.files , email);
     }
-    console.log(this.files);
-
   }
 
   unHide() {
@@ -172,17 +171,6 @@ export class ListComponent implements OnInit {
         this.filterInner(item.children , email);
       }
     });
-  }
-
-  copyFilesArr( files : File[]){
-    let result : File[] = [];
-    for (const file of files.slice(0)) {
-      let size = result.push(file);
-      if (file.hasChild()) {
-        result[size-1].children=this.copyFilesArr(file.children);
-      }
-    }
-    return result;
   }
 
   populateFilesArr( files : File[] , root : boolean )

@@ -13,8 +13,6 @@ export class ArrayService {
 
     let files : File[];
 
-    console.log(filesObj);
-
     if (filesObj == null) { return []; }
 
     files = this.fileArr(filesObj);

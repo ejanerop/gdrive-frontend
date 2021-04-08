@@ -11,7 +11,11 @@
           <mat-error>{{emailError}}</mat-error>
         </mat-form-field>
         <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let permission of permissions" [value]="permission.emailAddress">
+          <mat-option *ngFor="let permission of permissions"
+                      [value]="permission.emailAddress"
+                      [disabled]="owner(permission)"
+                      [matTooltipDisabled]="!owner(permission)"
+                      matTooltip="Propietario del Drive">
             {{permission.emailAddress}}
           </mat-option>
         </mat-autocomplete>
@@ -36,7 +40,11 @@
           &nbsp;
           <span class="spacer"></span>
           <mat-chip-list aria-label="Permissions">
-            <mat-chip *ngFor="let permission of node.permissions" color="primary" class="selectable" (click)="setEmail(permission)" selected>
+            <mat-chip *ngFor="let permission of node.permissions"
+                      [color]="owner(permission) ? 'secondary' : 'primary' "
+                      [class.selectable]="!owner(permission)"
+                      (click)="setEmail(permission)"
+                      selected>
               {{permission.emailAddress != null ? permission.emailAddress : permission.id }}
             </mat-chip>
           </mat-chip-list>
@@ -59,7 +67,11 @@
           &nbsp;
           <span class="spacer"></span>
           <mat-chip-list aria-label="Permissions">
-            <mat-chip *ngFor="let permission of node.permissions" color="primary" class="selectable" (click)="setEmail(permission)" selected>
+            <mat-chip *ngFor="let permission of node.permissions"
+                      [color]="owner(permission) ? 'secondary' : 'primary' "
+                      [class.selectable]="!owner(permission)"
+                      (click)="setEmail(permission)"
+                      selected>
               {{permission.emailAddress != null ? permission.emailAddress : permission.id }}
             </mat-chip>
           </mat-chip-list>
@@ -71,8 +83,5 @@
     </mat-nested-tree-node>
   </mat-tree>
 </mat-card-content>
-<pre>
-  {{form.value | json }}
-</pre>
 </mat-card>
 
