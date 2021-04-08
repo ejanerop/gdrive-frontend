@@ -12,6 +12,7 @@ import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { HttpClientModule } from '@angular/common/http';
 import { RedirectComponent } from './components/redirect/redirect.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IconPipe } from './pipes/icon.pipe';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ListComponent,
     HomeComponent,
     ToolbarComponent,
-    RedirectComponent
+    RedirectComponent,
+    IconPipe
   ],
   imports: [
     BrowserModule,
