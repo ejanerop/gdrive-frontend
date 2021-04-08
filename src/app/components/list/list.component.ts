@@ -1,5 +1,5 @@
 import { AuthService } from 'src/app/services/auth.service';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { File } from 'src/app/models/file';
 import { FileService } from 'src/app/services/file.service';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -21,10 +21,12 @@ export class ListComponent implements OnInit {
   files : File[] = [];
   form : FormGroup = new FormGroup({});
   loading : boolean = false;
+  permissions : Permission[] = [];
   treeControl = new NestedTreeControl<File>(node => node.children);
 
 
   hasChild = (_: number, node: File) => !!node.children && node.children.length > 0;
+  visible = (_: number, node: File) => node.visible;
 
   constructor(
     private authService : AuthService ,
@@ -58,9 +60,28 @@ export class ListComponent implements OnInit {
       this.allFiles = this.files;
       this.loading = false;
       this.onEmailChange();
+      this.initPermission();
     }, error =>{
       this.loading = false;
+      this.openSnackBar('Hubo un error en el servidor' , 'Cerrar');
     });
+  }
+
+  initPermission() {
+    this.findPermission(this.files);
+  }
+
+  private findPermission( files : File[] ) {
+    files.forEach(file => {
+      file.permissions.forEach(permission => {
+        if (!this.permissions.some(perm => perm.id == permission.id)) {
+          this.permissions.push(permission);
+        }
+      });
+      if (file.hasChild()) {
+        this.findPermission(file.children);
+      }
+    })
   }
 
   get invalidEmail() {
@@ -103,7 +124,7 @@ export class ListComponent implements OnInit {
       this.initFiles();
     }, error =>{
       console.error(error);
-      this.openSnackBar('Permisos revocados con éxito' , 'Cerrar');
+      this.openSnackBar('Hubo un error en el servidor' , 'Cerrar');
     });
   }
 
@@ -112,7 +133,6 @@ export class ListComponent implements OnInit {
       this.filter(email);
       this.dataSource.data = [];
       this.dataSource.data = this.files;
-      //this.treeControl.expandAll();
       this.populateFilesArr(this.files , true);
       if(!this.disabledSubmit) {
         let permission = this.files[0].permissionId(email);
@@ -123,22 +143,46 @@ export class ListComponent implements OnInit {
 
   setEmail( permission : Permission ) {
     this.form.get('email')?.setValue(permission.emailAddress);
+    this.form.get('email')?.updateValueAndValidity();
   }
 
   filter( email : string ) {
     if (email == '') {
-      this.files = this.allFiles;
+      this.unHide();
     } else {
-      this.files = this.allFiles.filter(item => {
-        if (item.hasPermission(email)) {
-          return true;
-        } else {
-          return false;
-        }
-      });
+      this.filterInner(this.files , email);
     }
     console.log(this.files);
 
+  }
+
+  unHide() {
+    this.files.forEach(item=>item.hide(false));
+  }
+
+
+  filterInner( files : File[] , email : string ) {
+    files.forEach(item => {
+      if (item.hasPermission(email)) {
+        item.hide(false);
+      }else {
+        item.hide(true);
+      }
+      if (item.hasChild()) {
+        this.filterInner(item.children , email);
+      }
+    });
+  }
+
+  copyFilesArr( files : File[]){
+    let result : File[] = [];
+    for (const file of files.slice(0)) {
+      let size = result.push(file);
+      if (file.hasChild()) {
+        result[size-1].children=this.copyFilesArr(file.children);
+      }
+    }
+    return result;
   }
 
   populateFilesArr( files : File[] , root : boolean )

@@ -8,6 +8,7 @@ export class File {
   mimeType : string;
   permissions : Permission[];
   children : File[];
+  private hidden : boolean = false;
 
   constructor( id : string , name :string , mimeType : string ) {
 
@@ -17,6 +18,10 @@ export class File {
     this.permissions = [];
     this.children = [];
 
+  }
+
+  get visible() {
+    return !this.hidden;
   }
 
   permissionId( email : string ) : string {
@@ -42,7 +47,7 @@ export class File {
   }
 
   hasPermission( email : string ) {
-    let hasPermission = this.permissions.some((permission) => permission.includes(email));
+    let hasPermission = this.hasPermissionOnlyRoot(email);
 
     if (this.children.length != 0) {
       hasPermission = this.children.some(file => file.hasPermission(email));
@@ -53,6 +58,15 @@ export class File {
 
   hasChild() {
     return this.children.length != 0;
+  }
+
+  hide( hide : boolean ) {
+    this.hidden = hide;
+    if (this.hasChild()) {
+      for (const file of this.children) {
+        file.hide(hide);
+      }
+    }
   }
 
 }

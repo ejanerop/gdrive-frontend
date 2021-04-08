@@ -1,9 +1,9 @@
+import { ArrayService } from './array.service';
+import { AuthService } from './auth.service';
+import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
-import { ArrayService } from './array.service';
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'

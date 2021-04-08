@@ -20,6 +20,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import {MatTreeModule} from '@angular/material/tree';
 import { MatChipsModule } from "@angular/material/chips";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 
 
@@ -46,7 +48,9 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     MatNativeDateModule,
     MatTreeModule,
     MatChipsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatAutocompleteModule
   ],
   exports : [
     MatButtonModule,
@@ -68,7 +72,9 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     MatNativeDateModule,
     MatTreeModule,
     MatChipsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatAutocompleteModule
   ]
 })
 export class MaterialModule { }

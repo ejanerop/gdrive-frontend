@@ -19,3 +19,7 @@
   margin-left: 3px;
   font-size: larger;
 }
+
+.selectable {
+  cursor: pointer;
+}
