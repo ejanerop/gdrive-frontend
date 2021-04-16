@@ -14,8 +14,8 @@ export class FileService {
 
   constructor( private http : HttpClient , private authService : AuthService , private arrayService : ArrayService ) {}
 
-  files() {
-
+  files()
+  {
     const url = `${this.url}/api/list`;
 
     let data : any = {api_token : null};
@@ -27,11 +27,10 @@ export class FileService {
     return this.http.post(url , data , {observe : 'response'}).pipe(map( (resp : any) =>{
       return this.arrayService.createArray(resp.body.files);
     }));
-
   }
 
-  unshare( data : any ) {
-
+  unshare( data : any )
+  {
     const url = `${this.url}/api/unshare`;
 
     if(this.authService.token){
@@ -39,7 +38,5 @@ export class FileService {
     }
 
     return this.http.post(url , data , {observe : 'response'});
-
   }
-
 }

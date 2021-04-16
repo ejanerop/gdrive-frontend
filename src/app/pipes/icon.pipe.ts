@@ -5,9 +5,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class IconPipe implements PipeTransform {
 
-  transform( value : string ): string {
-
-
+  transform( value : string ): string
+  {
     if (value == 'application/vnd.google-apps.folder') {
       return 'folder';
     } else if (value.includes('image/')) {
@@ -22,5 +21,4 @@ export class IconPipe implements PipeTransform {
       return 'insert_drive_file';
     }
   }
-
 }

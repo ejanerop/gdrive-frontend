@@ -9,15 +9,13 @@ export class ValidatorsService {
 
   constructor() { }
 
-  ownerEmail( control: FormControl ) {
-
+  ownerEmail( control: FormControl )
+  {
     if ( control.value?.toLowerCase() === environment.owner_email ){
       return {
         owner_email: true
       }
     }
-
     return null;
   }
-
 }

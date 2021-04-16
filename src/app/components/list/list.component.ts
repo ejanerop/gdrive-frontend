@@ -1,14 +1,14 @@
 import { AuthService } from 'src/app/services/auth.service';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { File } from 'src/app/models/file';
 import { FileService } from 'src/app/services/file.service';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTreeNestedDataSource} from '@angular/material/tree';
 import { NestedTreeControl} from '@angular/cdk/tree';
-import { ValidatorsService } from 'src/app/services/validators.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Permission } from 'src/app/models/permission';
-import { environment } from 'src/environments/environment';
+import { ValidatorsService } from 'src/app/services/validators.service';
 
 @Component({
   selector: 'app-list',
@@ -17,38 +17,38 @@ import { environment } from 'src/environments/environment';
 })
 export class ListComponent implements OnInit {
 
-  allFiles : File[] = [];
-  dataSource = new MatTreeNestedDataSource<File>();
-  files : File[] = [];
-  form : FormGroup = new FormGroup({});
-  loading : boolean = false;
+  allFiles    : File[]       = [];
+  files       : File[]       = [];
+  form        : FormGroup    = new FormGroup({});
+  loading     : boolean      = false;
   permissions : Permission[] = [];
+  dataSource  = new MatTreeNestedDataSource<File>();
   treeControl = new NestedTreeControl<File>(node => node.children);
 
-
   hasChild = (_: number, node: File) => !!node.children && node.children.length > 0;
-  visible = (_: number, node: File) => node.visible;
+  visible  = (_: number, node: File) => node.visible;
 
   constructor(
-    private authService : AuthService ,
     private fileService : FileService ,
     private fb : FormBuilder ,
     private validators : ValidatorsService,
     private _snackBar: MatSnackBar
-  ){
+  ) {
     this.dataSource.data = [];
     this.form = this.fb.group({
-      email : ['' , [Validators.required , Validators.pattern('[a-z0-9._%+-]+@gmail.com') , this.validators.ownerEmail ]],
+      email : ['' , [Validators.required , Validators.pattern('[a-z0-9._%+-]{6,30}@gmail.com') , this.validators.ownerEmail ]],
       permission : [''],
       files : this.fb.array([])
     });
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void
+  {
     this.initFiles();
   }
 
-  initFiles() {
+  initFiles()
+  {
     this.loading = true;
     this.form.reset();
     this.form.get('email')?.markAsPristine();
@@ -61,18 +61,21 @@ export class ListComponent implements OnInit {
       this.loading = false;
       this.onEmailChange();
       this.initPermission();
-    }, error =>{
+    }, error => {
+      console.error(error);
       this.loading = false;
       this.openSnackBar('Hubo un error en el servidor' , 'Cerrar');
     });
   }
 
-  initPermission() {
+  initPermission()
+  {
     this.findPermission(this.files);
   }
 
-  private findPermission( files : File[] ) {
-    files.forEach(file => {
+  private findPermission( files : File[] )
+  {
+    files.forEach( file => {
       file.permissions.forEach(permission => {
         if (!this.permissions.some(perm => perm.id == permission.id)) {
           this.permissions.push(permission);
@@ -84,19 +87,23 @@ export class ListComponent implements OnInit {
     })
   }
 
-  get invalidEmail() {
+  get invalidEmail()
+  {
     return this.form.get('email')?.invalid;
   }
 
-  get disabledSubmit() {
+  get disabledSubmit()
+  {
     return this.invalidEmail || this.files.length === 0;
   }
 
-  owner( permission : Permission ) {
+  owner( permission : Permission )
+  {
     return permission.emailAddress == environment.owner_email;
   }
 
-  get emailError() {
+  get emailError()
+  {
     if (this.form.get('email')?.hasError('owner_email')) {
       return 'Ese es el email del dueño.';
     }else {
@@ -104,23 +111,25 @@ export class ListComponent implements OnInit {
     }
   }
 
-  openSnackBar(message: string, action: string) {
+  openSnackBar( message: string, action: string )
+  {
     this._snackBar.open(message, action, {
-      duration: 2000,
+      duration: 4000,
     });
   }
 
-  isFolder( node : any ) : boolean {
+  isFolder( node : any ) : boolean
+  {
     return node.mimeType == 'application/vnd.google-apps.folder';
   }
 
-  unshare() {
+  unshare()
+  {
     if (this.form.invalid) {
       this.form.get('email')?.markAsTouched();
       return;
     }
-
-    this.fileService.unshare(this.form.value).subscribe((resp:any) => {
+    this.fileService.unshare(this.form.value).subscribe( () => {
       this.openSnackBar('Permisos revocados con éxito' , 'Cerrar');
       this.initFiles();
     }, error =>{
@@ -129,12 +138,13 @@ export class ListComponent implements OnInit {
     });
   }
 
-  onEmailChange() {
-    this.form.get('email')?.valueChanges.subscribe(email => {
+  onEmailChange()
+  {
+    this.form.get('email')?.valueChanges.subscribe( email => {
       this.filter(email);
       this.dataSource.data = [];
       this.dataSource.data = this.files;
-      this.populateFilesArr(this.files , true);
+      this.populateFilesArr(this.files , email,  true);
       if(!this.disabledSubmit) {
         let permission = this.files[0].permissionId(email);
         this.form.get('permission')?.setValue(permission);
@@ -142,12 +152,14 @@ export class ListComponent implements OnInit {
     });
   }
 
-  setEmail( permission : Permission ) {
+  setEmail( permission : Permission )
+  {
     this.form.get('email')?.setValue(permission.emailAddress);
     this.form.get('email')?.updateValueAndValidity();
   }
 
-  filter( email : string ) {
+  filter( email : string )
+  {
     if (email == '') {
       this.unHide();
     } else {
@@ -155,12 +167,13 @@ export class ListComponent implements OnInit {
     }
   }
 
-  unHide() {
+  unHide()
+  {
     this.files.forEach(item=>item.hide(false));
   }
 
-
-  filterInner( files : File[] , email : string ) {
+  filterInner( files : File[] , email : string )
+  {
     files.forEach(item => {
       if (item.hasPermission(email)) {
         item.hide(false);
@@ -173,7 +186,7 @@ export class ListComponent implements OnInit {
     });
   }
 
-  populateFilesArr( files : File[] , root : boolean )
+  populateFilesArr( files : File[] , email : string, root : boolean )
   {
     let arr = this.form.controls['files'] as FormArray;
 
@@ -181,16 +194,11 @@ export class ListComponent implements OnInit {
 
     for ( const file of files ) {
       if(file.hasChild()){
-        this.populateFilesArr(file.children , false);
+        this.populateFilesArr(file.children , email, false);
       }
-      if (file.hasPermissionOnlyRoot(this.form.get('email')?.value)) {
+      if (file.hasPermissionOnlyRoot(email)) {
         arr.push(new FormControl(file.id));
       }
     }
   }
-
-
-
-
-
 }

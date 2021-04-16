@@ -11,76 +11,66 @@ export class AuthService {
   api_token : string | null = '';
   url = environment.api_url;
 
-  constructor( private http : HttpClient ) {
-
+  constructor( private http : HttpClient )
+  {
     this.loadToken();
-
   }
 
-  login(){
-
+  login()
+  {
     const url = `${this.url}/login`;
-
     return this.http.get(url, {observe: 'response'});
-
   }
 
-  logout() {
-
+  logout()
+  {
     const url = `${this.url}/logout/${this.token}`;
 
-    const token = this.api_token;
-    return this.http.get(url).pipe( map( (resp : any) => {
-      this.removeToken();
-      return resp;
-    })
+    return this.http.get(url).pipe(
+      map( (resp : any) => {
+        this.removeToken();
+        return resp;
+      })
     );
-
   }
 
-  saveToken( token : string ) {
-
+  saveToken( token : string )
+  {
     this.api_token = token;
     localStorage.setItem('token', token);
 
     let hoy = new Date();
     hoy.setSeconds( 3600 );
 
-    localStorage.setItem('expira', hoy.getTime().toString() );
-
+    localStorage.setItem( 'expira', hoy.getTime().toString() );
   }
 
-  removeToken() {
-
+  removeToken()
+  {
     localStorage.removeItem('token');
     localStorage.removeItem('expira');
-
   }
 
-  loadToken() {
-
+  loadToken()
+  {
     if ( localStorage.getItem('token') == null ) {
       this.api_token = '';
     } else {
       this.api_token = localStorage.getItem('token');
     }
-
     return this.api_token;
-
   }
 
-  get token() {
-
+  get token()
+  {
     return this.api_token;
-
   }
 
-  isAuth() {
-
+  isAuth()
+  {
     if ( this.api_token != null && this.api_token.length < 2  ) {
       return false;
     }
-
     const expira = Number(localStorage.getItem('expira'));
     const expiraDate = new Date();
     expiraDate.setTime(expira);
@@ -90,7 +80,5 @@ export class AuthService {
     } else {
       return false;
     }
-
   }
-
 }

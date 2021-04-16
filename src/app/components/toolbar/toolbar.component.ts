@@ -10,24 +10,24 @@ import { Router } from '@angular/router';
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.css']
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarComponent {
 
-  constructor( @Inject(DOCUMENT) private document: Document ,  private authService : AuthService , private router : Router ) { }
+  constructor( @Inject(DOCUMENT) private document: Document , private authService : AuthService , private router : Router ) { }
 
-  ngOnInit(): void {
-  }
-
-  login() {
+  login()
+  {
     this.document.location.href = `${environment.api_url}/login`;
   }
 
-  logout() {
-    this.authService.logout().subscribe(resp => {
+  logout()
+  {
+    this.authService.logout().subscribe( () => {
       this.router.navigateByUrl('/home');
     });
   }
 
-  isAuth() {
+  isAuth()
+  {
     return this.authService.isAuth();
   }
 
